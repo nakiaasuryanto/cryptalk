@@ -52,9 +52,9 @@ export function sendMessage({ roomId, senderId, ciphertext, iv }) {
   }
 }
 
-export function loadHistory(roomId) {
+export function loadHistory(roomId, userId) {
   if (socket) {
-    socket.emit('load_history', { room_id: roomId });
+    socket.emit('load_history', { room_id: roomId, user_id: userId });
   }
 }
 

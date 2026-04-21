@@ -33,7 +33,7 @@ export default function ChatWindow({ roomId }) {
     socket.on('connect', () => {
       setConnected(true);
       joinRoom(roomId, userData.id);
-      loadHistory(roomId);
+      loadHistory(roomId, userData.id);
     });
 
     socket.on('disconnect', () => {
