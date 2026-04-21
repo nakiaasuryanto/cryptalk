@@ -1,7 +1,7 @@
 import uuid
 from . import get_db
 
-def create_room(name, host_id, key_hash):
+def create_room(name, host_id, key_hash, encryption_key=None):
     room_id = str(uuid.uuid4())
     conn = get_db()
     cursor = conn.cursor()
@@ -10,10 +10,10 @@ def create_room(name, host_id, key_hash):
             'INSERT INTO rooms (room_id, name, host_id, key_hash) VALUES (%s, %s, %s, %s) RETURNING id',
             (room_id, name, host_id, key_hash)
         )
-        # host automatically joins
+        # host automatically joins with encryption key
         cursor.execute(
-            'INSERT INTO room_members (room_id, user_id) VALUES (%s, %s)',
-            (room_id, host_id)
+            'INSERT INTO room_members (room_id, user_id, encryption_key) VALUES (%s, %s, %s)',
+            (room_id, host_id, encryption_key)
         )
         conn.commit()
         conn.close()
@@ -46,13 +46,13 @@ def get_rooms_for_user(user_id):
     conn.close()
     return [dict(row) for row in rows]
 
-def add_member(room_id, user_id):
+def add_member(room_id, user_id, encryption_key=None):
     conn = get_db()
     cursor = conn.cursor()
     try:
         cursor.execute(
-            'INSERT INTO room_members (room_id, user_id) VALUES (%s, %s)',
-            (room_id, int(user_id))
+            'INSERT INTO room_members (room_id, user_id, encryption_key) VALUES (%s, %s, %s)',
+            (room_id, int(user_id), encryption_key)
         )
         conn.commit()
         conn.close()
@@ -84,3 +84,31 @@ def is_member(room_id, user_id):
     row = cursor.fetchone()
     conn.close()
     return row is not None
+
+def get_member_key(room_id, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT encryption_key FROM room_members WHERE room_id = %s AND user_id = %s AND is_active = TRUE',
+        (room_id, int(user_id))
+    )
+    row = cursor.fetchone()
+    conn.close()
+    if row and row.get('encryption_key'):
+        return row['encryption_key']
+    return None
+
+def save_member_key(room_id, user_id, encryption_key):
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            'UPDATE room_members SET encryption_key = %s WHERE room_id = %s AND user_id = %s',
+            (encryption_key, room_id, int(user_id))
+        )
+        conn.commit()
+        conn.close()
+        return {'status': 'success'}
+    except Exception as e:
+        conn.close()
+        return {'status': 'error', 'message': str(e)}

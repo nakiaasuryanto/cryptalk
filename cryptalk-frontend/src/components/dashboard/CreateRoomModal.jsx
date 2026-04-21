@@ -25,7 +25,7 @@ export default function CreateRoomModal({ onClose, onCreated }) {
 
       const data = await apiFetch('/rooms/create', {
         method: 'POST',
-        body: JSON.stringify({ name, key_hash: keyHash })
+        body: JSON.stringify({ name, key_hash: keyHash, encryption_key: key })
       });
 
       if (data.status === 'success') {

@@ -50,10 +50,22 @@ def init_db():
             id SERIAL PRIMARY KEY,
             room_id TEXT NOT NULL REFERENCES rooms(room_id),
             user_id INTEGER NOT NULL REFERENCES users(id),
+            encryption_key TEXT,
             joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             is_active BOOLEAN DEFAULT TRUE,
             UNIQUE(room_id, user_id)
         )
+    ''')
+
+    # Add encryption_key column if not exists (for existing tables)
+    cursor.execute('''
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                          WHERE table_name='room_members' AND column_name='encryption_key') THEN
+                ALTER TABLE room_members ADD COLUMN encryption_key TEXT;
+            END IF;
+        END $$;
     ''')
 
     cursor.execute('''

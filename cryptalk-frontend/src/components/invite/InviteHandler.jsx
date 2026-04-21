@@ -6,6 +6,7 @@ export default function InviteHandler({ token }) {
   const [status, setStatus] = useState('loading');
   const [roomInfo, setRoomInfo] = useState(null);
   const [error, setError] = useState('');
+  const [encryptionKey, setEncryptionKey] = useState(null);
 
   useEffect(() => {
     handleInvite();
@@ -37,8 +38,9 @@ export default function InviteHandler({ token }) {
       if (data.status === 'success' && data.valid) {
         setRoomInfo(data);
         setStatus('valid');
-        // Simpan key ke sessionStorage
+        // Simpan key untuk dikirim saat join
         if (decodedKey) {
+          setEncryptionKey(decodedKey);
           localStorage.setItem(`room_key_${data.room_id}`, decodedKey);
         }
       } else {
@@ -54,7 +56,8 @@ export default function InviteHandler({ token }) {
   async function handleJoin() {
     try {
       const data = await apiFetch(`/invite/${token}/use`, {
-        method: 'POST'
+        method: 'POST',
+        body: JSON.stringify({ encryption_key: encryptionKey })
       });
 
       if (data.status === 'success') {

@@ -24,12 +24,31 @@ export default function ChatWindow({ roomId }) {
     setUser(userData);
     fetchRoomInfo();
 
-    const storedKey = localStorage.getItem(`room_key_${roomId}`);
-    if (!storedKey) {
+    async function loadKey() {
+      // Cek localStorage dulu
+      const storedKey = localStorage.getItem(`room_key_${roomId}`);
+      if (storedKey) {
+        setKey(storedKey);
+        return;
+      }
+
+      // Kalau tidak ada, coba ambil dari database
+      try {
+        const data = await apiFetch(`/rooms/${roomId}/key`);
+        if (data.status === 'success' && data.encryption_key) {
+          localStorage.setItem(`room_key_${roomId}`, data.encryption_key);
+          setKey(data.encryption_key);
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to fetch key:', err);
+      }
+
+      // Kalau masih tidak ada, minta input manual
       setNeedKey(true);
-      return;
     }
-    setKey(storedKey);
+
+    loadKey();
   }, [roomId]);
 
   useEffect(() => {
@@ -129,7 +148,7 @@ export default function ChatWindow({ roomId }) {
       const keyHash = await hashKey(keyInput);
       const data = await apiFetch(`/rooms/${roomId}/verify-key`, {
         method: 'POST',
-        body: JSON.stringify({ key_hash: keyHash })
+        body: JSON.stringify({ key_hash: keyHash, encryption_key: keyInput })
       });
 
       if (data.status === 'success' && data.valid) {

@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 import sys
 sys.path.append('..')
-from models.room import create_room, get_room_by_id, get_rooms_for_user, get_room_members, add_member, is_member
+from models.room import create_room, get_room_by_id, get_rooms_for_user, get_room_members, add_member, is_member, get_member_key, save_member_key
 
 room_bp = Blueprint('room', __name__)
 
@@ -21,11 +21,12 @@ def make_room():
     data = request.get_json()
     name = data.get('name')
     key_hash = data.get('key_hash')
+    encryption_key = data.get('encryption_key')
 
     if not name or not key_hash:
         return jsonify({'status': 'error', 'message': 'Missing fields'}), 400
 
-    result = create_room(name, user_id, key_hash)
+    result = create_room(name, user_id, key_hash, encryption_key)
     if result['status'] == 'error':
         return jsonify({'status': 'error', 'message': result['message']}), 500
 
@@ -75,11 +76,43 @@ def verify_key(room_id):
 
     data = request.get_json()
     key_hash = data.get('key_hash')
+    encryption_key = data.get('encryption_key')
 
     if not key_hash:
         return jsonify({'status': 'error', 'message': 'Key hash required'}), 400
 
     if room['key_hash'] == key_hash:
+        # Save key to database if provided
+        if encryption_key:
+            save_member_key(room_id, user_id, encryption_key)
         return jsonify({'status': 'success', 'valid': True}), 200
     else:
         return jsonify({'status': 'success', 'valid': False}), 200
+
+@room_bp.route('/rooms/<room_id>/key', methods=['GET'])
+@jwt_required()
+def get_key(room_id):
+    user_id = get_jwt_identity()
+
+    if not is_member(room_id, user_id):
+        return jsonify({'status': 'error', 'message': 'Not a member'}), 403
+
+    key = get_member_key(room_id, user_id)
+    return jsonify({'status': 'success', 'encryption_key': key}), 200
+
+@room_bp.route('/rooms/<room_id>/key', methods=['POST'])
+@jwt_required()
+def set_key(room_id):
+    user_id = get_jwt_identity()
+
+    if not is_member(room_id, user_id):
+        return jsonify({'status': 'error', 'message': 'Not a member'}), 403
+
+    data = request.get_json()
+    encryption_key = data.get('encryption_key')
+
+    if not encryption_key:
+        return jsonify({'status': 'error', 'message': 'Key required'}), 400
+
+    result = save_member_key(room_id, user_id, encryption_key)
+    return jsonify(result), 200

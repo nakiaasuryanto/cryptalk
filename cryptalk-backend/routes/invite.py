@@ -37,7 +37,6 @@ def validate_invite(token):
         expired_at = datetime.fromisoformat(expired_at.replace('Z', '+00:00'))
 
     if expired_at.replace(tzinfo=None) < datetime.utcnow():
-        return jsonify({'status': 'valid', 'message': 'Token expired'}), 200
         return jsonify({'status': 'success', 'valid': False, 'message': 'Token expired'}), 200
 
     room = get_room_by_id(invite['room_id'])
@@ -52,6 +51,9 @@ def validate_invite(token):
 @jwt_required()
 def use_invite_endpoint(token):
     user_id = get_jwt_identity()
+    data = request.get_json() or {}
+    encryption_key = data.get('encryption_key')
+
     invite = get_invite(token)
 
     if not invite:
@@ -70,7 +72,7 @@ def use_invite_endpoint(token):
     if is_member(invite['room_id'], user_id):
         return jsonify({'status': 'success', 'room_id': invite['room_id'], 'message': 'Already a member'}), 200
 
-    add_member(invite['room_id'], user_id)
+    add_member(invite['room_id'], user_id, encryption_key)
     use_invite(token, user_id)
 
     return jsonify({'status': 'success', 'room_id': invite['room_id']}), 200
