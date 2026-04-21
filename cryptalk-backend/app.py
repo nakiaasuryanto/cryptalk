@@ -3,7 +3,6 @@ from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
 
 from models import init_db
 from routes import auth_bp, room_bp, invite_bp
@@ -23,7 +22,6 @@ CORS(app,
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
 jwt = JWTManager(app)
-bcrypt = Bcrypt(app)
 
 socketio = SocketIO(
     app,
