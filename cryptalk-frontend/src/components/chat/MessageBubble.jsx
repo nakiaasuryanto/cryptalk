@@ -63,7 +63,8 @@ const styles = {
     maxWidth: '70%',
     borderRadius: '16px',
     padding: '0.75rem 1rem',
-    position: 'relative'
+    position: 'relative',
+    wordBreak: 'break-word'
   },
   bubbleOwn: {
     background: '#546B41',
@@ -97,16 +98,17 @@ const styles = {
   },
   inspectorToggle: {
     position: 'absolute',
-    top: '0.5rem',
-    right: '-1.75rem',
+    bottom: '0.5rem',
+    right: '0.5rem',
     background: '#99AD7A',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '0.75rem',
-    width: '20px',
-    height: '20px',
+    fontSize: '0.65rem',
+    width: '18px',
+    height: '18px',
     borderRadius: '50%',
     color: '#fff',
-    fontWeight: '700'
+    fontWeight: '700',
+    opacity: 0.7
   }
 };

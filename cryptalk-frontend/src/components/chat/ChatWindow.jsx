@@ -265,12 +265,16 @@ const styles = {
   wrapper: {
     display: 'flex',
     height: '100vh',
-    background: '#FFF8EC'
+    width: '100vw',
+    background: '#FFF8EC',
+    overflow: 'hidden'
   },
   chatArea: {
     flex: 1,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    minWidth: 0,
+    overflow: 'hidden'
   },
   header: {
     display: 'flex',
@@ -303,6 +307,7 @@ const styles = {
   messages: {
     flex: 1,
     overflowY: 'auto',
+    overflowX: 'hidden',
     padding: '1rem'
   },
   empty: {
@@ -312,10 +317,12 @@ const styles = {
   },
   sidebar: {
     width: '280px',
+    minWidth: '280px',
     background: '#DCCCAC',
     borderLeft: '1px solid #c4b494',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    overflow: 'hidden'
   },
   sidebarHeader: {
     padding: '1rem',
