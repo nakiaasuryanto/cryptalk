@@ -54,77 +54,153 @@ export default function RoomList() {
     setShowModal(false);
   }
 
+  function handleLogout() {
+    localStorage.removeItem('aes_token');
+    localStorage.removeItem('aes_user');
+    window.location.href = '/login';
+  }
+
   return (
-    <div style={styles.container}>
-      <div style={styles.topBar}>
-        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px'}} />
-      </div>
-      <div style={styles.header}>
-        <h2 style={styles.title}>Dashboard</h2>
-        <button onClick={() => setShowModal(true)} style={styles.createBtn}>
-          + Buat Room
+    <div style={styles.wrapper}>
+      {/* Sidebar */}
+      <div style={styles.sidebar}>
+        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px', marginBottom: '2rem'}} />
+
+        <div style={styles.userCard}>
+          <div style={styles.avatar}>{user.username?.charAt(0).toUpperCase() || '?'}</div>
+          <div style={styles.userInfo}>
+            <span style={styles.userName}>{user.username}</span>
+            <span style={styles.userEmail}>{user.email}</span>
+          </div>
+        </div>
+
+        <button onClick={handleLogout} style={styles.logoutBtn}>
+          Logout
         </button>
       </div>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {/* Main Content */}
+      <div style={styles.main}>
+        <div style={styles.header}>
+          <h2 style={styles.title}>Room Kamu</h2>
+          <button onClick={() => setShowModal(true)} style={styles.createBtn}>
+            + Buat Room
+          </button>
+        </div>
 
-      {loading ? (
-        <div style={styles.loading}>Memuat...</div>
-      ) : rooms.length === 0 ? (
-        <div style={styles.empty}>Belum ada room. Buat room pertama!</div>
-      ) : (
-        <div style={styles.list}>
-          {rooms.map(room => (
-            <div key={room.room_id} style={styles.roomCard}>
-              <div style={styles.roomInfo}>
-                <span style={styles.roomName}>{room.name}</span>
-                <span style={styles.roomMeta}>
-                  Host: {room.host_id === user.id ? 'Kamu' : `User ${room.host_id}`}
-                </span>
-              </div>
-              <div style={styles.roomActions}>
-                <button
-                  onClick={() => window.location.href = `/chat/${room.room_id}`}
-                  style={styles.enterBtn}
-                >
-                  Masuk
-                </button>
-                {room.host_id === user.id && (
-                  <button onClick={() => handleInvite(room)} style={styles.inviteBtn}>
-                    Invite
+        {error && <div style={styles.error}>{error}</div>}
+
+        {loading ? (
+          <div style={styles.loading}>Memuat...</div>
+        ) : rooms.length === 0 ? (
+          <div style={styles.empty}>Belum ada room. Buat room pertama!</div>
+        ) : (
+          <div style={styles.list}>
+            {rooms.map(room => (
+              <div key={room.room_id} style={styles.roomCard}>
+                <div style={styles.roomInfo}>
+                  <span style={styles.roomName}>{room.name}</span>
+                  <span style={styles.roomMeta}>
+                    {room.host_id === user.id ? 'Host: Kamu' : ''}
+                  </span>
+                </div>
+                <div style={styles.roomActions}>
+                  <button
+                    onClick={() => window.location.href = `/chat/${room.room_id}`}
+                    style={styles.enterBtn}
+                  >
+                    Masuk
                   </button>
+                  {room.host_id === user.id && (
+                    <button onClick={() => handleInvite(room)} style={styles.inviteBtn}>
+                      Invite
+                    </button>
+                  )}
+                </div>
+                {inviteLinks[room.room_id] && (
+                  <div style={styles.inviteBox}>
+                    <span style={styles.inviteLabel}>Link Invite:</span>
+                    <code style={styles.inviteLink}>{inviteLinks[room.room_id]}</code>
+                  </div>
                 )}
               </div>
-              {inviteLinks[room.room_id] && (
-                <div style={styles.inviteBox}>
-                  <span style={styles.inviteLabel}>Link Invite:</span>
-                  <code style={styles.inviteLink}>{inviteLinks[room.room_id]}</code>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {showModal && (
-        <CreateRoomModal
-          onClose={() => setShowModal(false)}
-          onCreated={handleRoomCreated}
-        />
-      )}
+        {showModal && (
+          <CreateRoomModal
+            onClose={() => setShowModal(false)}
+            onCreated={handleRoomCreated}
+          />
+        )}
+      </div>
     </div>
   );
 }
 
 const styles = {
-  container: {
-    padding: '1.5rem',
-    maxWidth: '800px',
-    margin: '0 auto'
+  wrapper: {
+    display: 'flex',
+    minHeight: '100vh'
   },
-  topBar: {
-    textAlign: 'center',
-    marginBottom: '1.5rem'
+  sidebar: {
+    width: '280px',
+    background: '#DCCCAC',
+    padding: '1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  userCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: '1.5rem',
+    width: '100%'
+  },
+  avatar: {
+    width: '64px',
+    height: '64px',
+    borderRadius: '50%',
+    background: '#546B41',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    marginBottom: '0.75rem'
+  },
+  userInfo: {
+    textAlign: 'center'
+  },
+  userName: {
+    display: 'block',
+    color: '#3d3d3d',
+    fontWeight: '700',
+    fontSize: '1rem'
+  },
+  userEmail: {
+    display: 'block',
+    color: '#6b6b6b',
+    fontSize: '0.8rem'
+  },
+  logoutBtn: {
+    marginTop: 'auto',
+    padding: '0.625rem 1.5rem',
+    background: '#c4b494',
+    color: '#3d3d3d',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    width: '100%'
+  },
+  main: {
+    flex: 1,
+    padding: '2rem',
+    maxWidth: '800px'
   },
   header: {
     display: 'flex',

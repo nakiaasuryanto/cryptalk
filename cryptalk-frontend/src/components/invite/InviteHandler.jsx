@@ -34,10 +34,10 @@ export default function InviteHandler({ token }) {
       // Validasi token invite
       const data = await apiFetch(`/invite/${token}`);
 
-      if (data.status === 'valid') {
+      if (data.status === 'success' && data.valid) {
         setRoomInfo(data);
         setStatus('valid');
-        // Simpan key ke sessionStorage nanti saat gabung
+        // Simpan key ke sessionStorage
         if (decodedKey) {
           sessionStorage.setItem(`room_key_${data.room_id}`, decodedKey);
         }

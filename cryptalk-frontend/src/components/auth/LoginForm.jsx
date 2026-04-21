@@ -21,7 +21,11 @@ export default function LoginForm() {
       if (data.status === 'success') {
         localStorage.setItem('aes_token', data.token);
         localStorage.setItem('aes_user', JSON.stringify(data.user));
-        window.location.href = '/dashboard';
+        // Check for redirect URL
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        const hash = window.location.hash;
+        window.location.href = redirect ? redirect + hash : '/dashboard';
       } else {
         setError(data.message || 'Login gagal');
       }
