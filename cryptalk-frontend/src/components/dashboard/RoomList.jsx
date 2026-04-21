@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../lib/api.js';
 import { encodeKeyForURL } from '../../lib/aes.js';
+import { initSocket, joinRoom, onReceiveMessage, disconnectSocket } from '../../lib/socket.js';
 import API_CONFIG from '../../config.js';
 import CreateRoomModal from './CreateRoomModal.jsx';
 
@@ -11,10 +12,30 @@ export default function RoomList() {
   const [inviteLinks, setInviteLinks] = useState({});
   const [error, setError] = useState('');
   const [user, setUser] = useState({});
+  const [unreadCounts, setUnreadCounts] = useState({});
 
-  React.useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('aes_user') || '{}'));
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
+    setUser(userData);
     fetchRooms();
+
+    // Connect socket untuk listen pesan baru
+    const socket = initSocket();
+
+    const unsubscribe = onReceiveMessage((data) => {
+      // Tambah unread count untuk room yang dapat pesan
+      if (data.sender_id !== userData.id) {
+        setUnreadCounts(prev => ({
+          ...prev,
+          [data.room_id]: (prev[data.room_id] || 0) + 1
+        }));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      disconnectSocket();
+    };
   }, []);
 
   async function fetchRooms() {
@@ -23,6 +44,11 @@ export default function RoomList() {
       const data = await apiFetch('/rooms');
       if (data.status === 'success') {
         setRooms(data.rooms || []);
+        // Join semua room untuk terima notifikasi
+        const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
+        (data.rooms || []).forEach(room => {
+          joinRoom(room.room_id, userData.id);
+        });
       }
     } catch (err) {
       setError(err.message);
@@ -99,14 +125,24 @@ export default function RoomList() {
             {rooms.map(room => (
               <div key={room.room_id} style={styles.roomCard}>
                 <div style={styles.roomInfo}>
-                  <span style={styles.roomName}>{room.name}</span>
+                  <div style={styles.roomNameRow}>
+                    <span style={styles.roomName}>{room.name}</span>
+                    {unreadCounts[room.room_id] > 0 && (
+                      <span style={styles.unreadBadge}>
+                        {unreadCounts[room.room_id] > 9 ? '9+' : unreadCounts[room.room_id]}
+                      </span>
+                    )}
+                  </div>
                   <span style={styles.roomMeta}>
                     {room.host_id === user.id ? 'Host: Kamu' : ''}
                   </span>
                 </div>
                 <div style={styles.roomActions}>
                   <button
-                    onClick={() => window.location.href = `/chat/${room.room_id}`}
+                    onClick={() => {
+                      setUnreadCounts(prev => ({ ...prev, [room.room_id]: 0 }));
+                      window.location.href = `/chat/${room.room_id}`;
+                    }}
                     style={styles.enterBtn}
                   >
                     Masuk
@@ -258,10 +294,25 @@ const styles = {
     gap: '0.25rem',
     marginBottom: '0.75rem'
   },
+  roomNameRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
+  },
   roomName: {
     color: '#3d3d3d',
     fontSize: '1.1rem',
     fontWeight: '700'
+  },
+  unreadBadge: {
+    background: '#c45a5a',
+    color: '#fff',
+    fontSize: '0.75rem',
+    fontWeight: '700',
+    padding: '0.125rem 0.5rem',
+    borderRadius: '10px',
+    minWidth: '20px',
+    textAlign: 'center'
   },
   roomMeta: {
     color: '#6b6b6b',

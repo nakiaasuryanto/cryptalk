@@ -65,6 +65,7 @@ def register_socket_events(socketio):
             sender_name = sender['username'] if sender else 'Unknown'
 
             emit('receive_message', {
+                'room_id': room_id,
                 'sender_id': sender_id,
                 'sender_name': sender_name,
                 'ciphertext': ciphertext,
