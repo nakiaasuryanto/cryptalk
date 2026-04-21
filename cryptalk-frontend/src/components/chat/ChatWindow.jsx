@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { initSocket, joinRoom, leaveRoom, sendMessage, loadHistory, onReceiveMessage, onHistoryLoaded, disconnectSocket } from '../../lib/socket.js';
-import { encryptMessage, decryptMessage } from '../../lib/aes.js';
+import { encryptMessage, decryptMessage, validateKey } from '../../lib/aes.js';
 import { apiFetch } from '../../lib/api.js';
 import MessageBubble from './MessageBubble.jsx';
 import MessageInput from './MessageInput.jsx';
@@ -13,21 +13,29 @@ export default function ChatWindow({ roomId }) {
   const [user, setUser] = useState({});
   const [roomInfo, setRoomInfo] = useState(null);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [needKey, setNeedKey] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
+  const [keyError, setKeyError] = useState('');
+  const [keyLoading, setKeyLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const storedKey = sessionStorage.getItem(`room_key_${roomId}`);
+    const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
+    setUser(userData);
+    fetchRoomInfo();
+
+    const storedKey = localStorage.getItem(`room_key_${roomId}`);
     if (!storedKey) {
-      setError('Key tidak ditemukan. Pastikan kamu bergabung melalui link invite yang benar.');
+      setNeedKey(true);
       return;
     }
     setKey(storedKey);
+  }, [roomId]);
+
+  useEffect(() => {
+    if (!key) return;
+
     const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
-    setUser(userData);
-
-    // Fetch room info
-    fetchRoomInfo();
-
     const socket = initSocket();
 
     socket.on('connect', () => {
@@ -41,7 +49,7 @@ export default function ChatWindow({ roomId }) {
     });
 
     const unsubscribeMsg = onReceiveMessage((data) => {
-      const decrypted = decryptMessage(data.ciphertext, data.iv, storedKey);
+      const decrypted = decryptMessage(data.ciphertext, data.iv, key);
       const msg = {
         message_id: data.message_id,
         sender_id: data.sender_id,
@@ -58,7 +66,7 @@ export default function ChatWindow({ roomId }) {
     const unsubscribeHistory = onHistoryLoaded((data) => {
       const decrypted = data.messages.map(msg => ({
         ...msg,
-        plaintext: decryptMessage(msg.ciphertext, msg.iv, storedKey),
+        plaintext: decryptMessage(msg.ciphertext, msg.iv, key),
         is_own: msg.sender_id === userData.id
       }));
       setMessages(decrypted);
@@ -70,7 +78,7 @@ export default function ChatWindow({ roomId }) {
       unsubscribeHistory();
       disconnectSocket();
     };
-  }, [roomId]);
+  }, [roomId, key]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -97,6 +105,73 @@ export default function ChatWindow({ roomId }) {
       ciphertext,
       iv
     });
+  }
+
+  async function hashKey(inputKey) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(inputKey);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function handleKeySubmit(e) {
+    e.preventDefault();
+    setKeyError('');
+
+    if (!validateKey(keyInput)) {
+      setKeyError('Key harus tepat 16 karakter');
+      return;
+    }
+
+    setKeyLoading(true);
+    try {
+      const keyHash = await hashKey(keyInput);
+      const data = await apiFetch(`/rooms/${roomId}/verify-key`, {
+        method: 'POST',
+        body: JSON.stringify({ key_hash: keyHash })
+      });
+
+      if (data.status === 'success' && data.valid) {
+        localStorage.setItem(`room_key_${roomId}`, keyInput);
+        setKey(keyInput);
+        setNeedKey(false);
+      } else {
+        setKeyError('Key tidak cocok dengan room ini');
+      }
+    } catch (err) {
+      setKeyError(err.message || 'Terjadi kesalahan');
+    } finally {
+      setKeyLoading(false);
+    }
+  }
+
+  if (needKey) {
+    return (
+      <div style={styles.errorContainer}>
+        <div style={styles.keyBox}>
+          <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px', marginBottom: '1rem'}} />
+          <h3 style={styles.keyTitle}>Masukkan Key Room</h3>
+          <p style={styles.keyDesc}>Room: {roomInfo?.name || 'Loading...'}</p>
+          <form onSubmit={handleKeySubmit} style={styles.keyForm}>
+            <input
+              type="text"
+              value={keyInput}
+              onChange={e => setKeyInput(e.target.value)}
+              placeholder="Key 16 karakter"
+              maxLength={16}
+              style={styles.keyInput}
+            />
+            <span style={styles.keyCount}>{keyInput.length}/16</span>
+            {keyError && <div style={styles.keyError}>{keyError}</div>}
+            <button type="submit" disabled={keyLoading} style={styles.keyBtn}>
+              {keyLoading ? 'Memverifikasi...' : 'Masuk Room'}
+            </button>
+          </form>
+          <a href="/dashboard" style={styles.errorLink}>Kembali ke Dashboard</a>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -355,5 +430,60 @@ const styles = {
   errorLink: {
     color: '#546B41',
     fontWeight: '600'
+  },
+  keyBox: {
+    background: '#DCCCAC',
+    borderRadius: '20px',
+    padding: '2rem',
+    textAlign: 'center',
+    maxWidth: '400px',
+    width: '90vw'
+  },
+  keyTitle: {
+    color: '#546B41',
+    margin: '0 0 0.5rem 0',
+    fontWeight: '700'
+  },
+  keyDesc: {
+    color: '#6b6b6b',
+    margin: '0 0 1.5rem 0',
+    fontSize: '0.9rem'
+  },
+  keyForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    marginBottom: '1rem'
+  },
+  keyInput: {
+    padding: '0.875rem',
+    background: '#ffffff',
+    border: '2px solid #c4b494',
+    borderRadius: '10px',
+    color: '#3d3d3d',
+    fontSize: '1rem',
+    textAlign: 'center',
+    fontFamily: 'monospace'
+  },
+  keyCount: {
+    color: '#6b6b6b',
+    fontSize: '0.8rem'
+  },
+  keyError: {
+    color: '#c45a5a',
+    fontSize: '0.875rem',
+    padding: '0.5rem',
+    background: '#f8e8e8',
+    borderRadius: '8px'
+  },
+  keyBtn: {
+    padding: '0.875rem',
+    background: '#546B41',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontSize: '1rem'
   }
 };

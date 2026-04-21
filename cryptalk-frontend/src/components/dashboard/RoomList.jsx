@@ -39,7 +39,7 @@ export default function RoomList() {
       });
 
       if (data.status === 'success') {
-        const key = sessionStorage.getItem(`room_key_${room.room_id}`);
+        const key = localStorage.getItem(`room_key_${room.room_id}`);
         const encodedKey = key ? encodeKeyForURL(key) : '';
         const inviteLink = `${API_CONFIG.FRONTEND_URL}/invite/${data.token}#${encodedKey}`;
         setInviteLinks(prev => ({ ...prev, [room.room_id]: inviteLink }));

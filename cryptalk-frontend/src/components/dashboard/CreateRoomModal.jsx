@@ -30,7 +30,7 @@ export default function CreateRoomModal({ onClose, onCreated }) {
 
       if (data.status === 'success') {
         // Simpan key asli ke sessionStorage
-        sessionStorage.setItem(`room_key_${data.room.room_id}`, key);
+        localStorage.setItem(`room_key_${data.room.room_id}`, key);
         onCreated(data.room);
         onClose();
       } else {

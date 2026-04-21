@@ -39,7 +39,7 @@ export default function InviteHandler({ token }) {
         setStatus('valid');
         // Simpan key ke sessionStorage
         if (decodedKey) {
-          sessionStorage.setItem(`room_key_${data.room_id}`, decodedKey);
+          localStorage.setItem(`room_key_${data.room_id}`, decodedKey);
         }
       } else {
         setStatus('invalid');

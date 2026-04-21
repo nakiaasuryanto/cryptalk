@@ -60,3 +60,26 @@ def join_room(room_id):
     if result['status'] == 'error':
         return jsonify({'status': 'error', 'message': result['message']}), 500
     return jsonify({'status': 'success'}), 200
+
+@room_bp.route('/rooms/<room_id>/verify-key', methods=['POST'])
+@jwt_required()
+def verify_key(room_id):
+    user_id = get_jwt_identity()
+
+    if not is_member(room_id, user_id):
+        return jsonify({'status': 'error', 'message': 'Not a member'}), 403
+
+    room = get_room_by_id(room_id)
+    if not room:
+        return jsonify({'status': 'error', 'message': 'Room not found'}), 404
+
+    data = request.get_json()
+    key_hash = data.get('key_hash')
+
+    if not key_hash:
+        return jsonify({'status': 'error', 'message': 'Key hash required'}), 400
+
+    if room['key_hash'] == key_hash:
+        return jsonify({'status': 'success', 'valid': True}), 200
+    else:
+        return jsonify({'status': 'success', 'valid': False}), 200
