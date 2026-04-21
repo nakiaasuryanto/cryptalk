@@ -1,0 +1,16 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import ChatWindow from '../../components/chat/ChatWindow.jsx';
+
+const { room_id } = Astro.params;
+---
+<script>
+  if (!localStorage.getItem('aes_token')) {
+    window.location.href = '/login';
+  }
+</script>
+<MainLayout title="Chat - AES Messenger">
+  <main style="height: 100vh;">
+    <ChatWindow roomId={room_id} client:load />
+  </main>
+</MainLayout>

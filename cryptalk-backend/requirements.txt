@@ -1,0 +1,9 @@
+flask
+flask-socketio
+flask-cors
+flask-bcrypt
+flask-jwt-extended
+python-dotenv
+simple-websocket
+supabase
+psycopg2-binary

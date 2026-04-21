@@ -1,0 +1,15 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import RoomList from '../components/dashboard/RoomList.jsx';
+---
+<script>
+  if (!localStorage.getItem('aes_token')) {
+    window.location.href = '/login';
+  }
+</script>
+<MainLayout title="Dashboard - AES Messenger">
+  <main style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+    <h1 style="font-family: var(--font-mono, monospace); color: #39d353; margin-bottom: 2rem;">Dashboard</h1>
+    <RoomList client:load />
+  </main>
+</MainLayout>

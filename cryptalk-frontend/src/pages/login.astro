@@ -1,0 +1,10 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import LoginForm from '../components/auth/LoginForm.jsx';
+---
+<MainLayout title="Login - AES Messenger">
+  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+    <h1 style="font-family: var(--font-mono, monospace); color: #39d353; margin-bottom: 2rem;">Login</h1>
+    <LoginForm client:load />
+  </main>
+</MainLayout>

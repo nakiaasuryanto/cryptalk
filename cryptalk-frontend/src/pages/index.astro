@@ -1,0 +1,16 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+<MainLayout title="AES Messenger - Home">
+  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; text-align: center;">
+    <h1 style="font-family: var(--font-mono, monospace); color: #39d353; margin-bottom: 1rem;">AES Messenger</h1>
+    <p style="color: #8b949e; max-width: 500px; margin-bottom: 2rem;">
+      Aplikasi messenger dengan enkripsi end-to-end menggunakan AES-128-CBC.
+      Semua pesan dienkripsi di browser — server tidak pernah melihat plaintext.
+    </p>
+    <div style="display: flex; gap: 1rem;">
+      <a href="/login" style="padding: 0.75rem 1.5rem; background: #238636; color: #fff; border-radius: 6px; font-weight: 600;">Login</a>
+      <a href="/register" style="padding: 0.75rem 1.5rem; background: transparent; color: #39d353; border: 1px solid #39d353; border-radius: 6px; font-weight: 600;">Register</a>
+    </div>
+  </main>
+</MainLayout>
