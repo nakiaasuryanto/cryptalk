@@ -90,7 +90,7 @@ export default function InviteHandler({ token }) {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Undangan Room</h2>
+        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '50px', marginBottom: '1rem'}} />
         <div style={styles.info}>
           <p style={styles.roomName}>Room: <strong>{roomInfo?.room_name}</strong></p>
           <p style={styles.roomMeta}>

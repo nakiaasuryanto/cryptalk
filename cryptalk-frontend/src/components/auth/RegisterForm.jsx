@@ -40,7 +40,7 @@ export default function RegisterForm() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Register</h2>
+      <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '60px', marginBottom: '1rem', display: 'block', marginLeft: 'auto', marginRight: 'auto'}} />
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.field}>
           <label htmlFor="username" style={styles.label}>Username</label>

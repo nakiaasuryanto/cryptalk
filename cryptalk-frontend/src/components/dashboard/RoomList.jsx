@@ -57,7 +57,7 @@ export default function RoomList() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h2 style={styles.title}>Dashboard</h2>
+        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '50px'}} />
         <button onClick={() => setShowModal(true)} style={styles.createBtn}>
           + Buat Room
         </button>

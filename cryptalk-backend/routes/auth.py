@@ -18,8 +18,7 @@ def register():
     if not username or not email or not password:
         return jsonify({'status': 'error', 'message': 'Missing fields'}), 400
 
-    pw_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    result = create_user(username, email, pw_hash)
+    result = create_user(username, email, password)
 
     if result['status'] == 'error':
         return jsonify({'status': 'error', 'message': result['message']}), 409

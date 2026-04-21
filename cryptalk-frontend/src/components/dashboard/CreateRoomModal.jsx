@@ -54,7 +54,7 @@ export default function CreateRoomModal({ onClose, onCreated }) {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-        <h2 style={styles.title}>Buat Room Baru</h2>
+        <h2 style={styles.title}>Buat Room</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.field}>
             <label style={styles.label}>Nama Room</label>
