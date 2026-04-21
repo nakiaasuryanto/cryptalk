@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta
+from . import get_db
 
 def create_invite(room_id, created_by):
     token = str(uuid.uuid4())
