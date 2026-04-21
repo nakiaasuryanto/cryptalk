@@ -56,8 +56,11 @@ export default function RoomList() {
 
   return (
     <div style={styles.container}>
+      <div style={styles.topBar}>
+        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px'}} />
+      </div>
       <div style={styles.header}>
-        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '50px'}} />
+        <h2 style={styles.title}>Dashboard</h2>
         <button onClick={() => setShowModal(true)} style={styles.createBtn}>
           + Buat Room
         </button>
@@ -118,6 +121,10 @@ const styles = {
     padding: '1.5rem',
     maxWidth: '800px',
     margin: '0 auto'
+  },
+  topBar: {
+    textAlign: 'center',
+    marginBottom: '1.5rem'
   },
   header: {
     display: 'flex',
