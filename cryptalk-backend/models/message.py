@@ -27,4 +27,11 @@ def get_room_messages(room_id):
     ''', (room_id,))
     rows = cursor.fetchall()
     conn.close()
-    return [dict(row) for row in rows]
+    result = []
+    for row in rows:
+        msg = dict(row)
+        # Convert timestamp to string for JSON serialization
+        if msg.get('timestamp'):
+            msg['timestamp'] = msg['timestamp'].isoformat()
+        result.append(msg)
+    return result

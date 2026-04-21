@@ -48,48 +48,56 @@ def register_socket_events(socketio):
 
     @socketio.on('send_message')
     def handle_send_message(data):
-        room_id = data.get('room_id')
-        sender_id = data.get('sender_id')
-        ciphertext = data.get('ciphertext')
-        iv = data.get('iv')
+        try:
+            room_id = data.get('room_id')
+            sender_id = data.get('sender_id')
+            ciphertext = data.get('ciphertext')
+            iv = data.get('iv')
 
-        if not is_member(room_id, sender_id):
-            emit('error', {'message': 'Not a member of this room'})
-            return
+            if not is_member(room_id, sender_id):
+                emit('error', {'message': 'Not a member of this room'})
+                return
 
-        result = save_message(room_id, sender_id, ciphertext, iv)
-        message_id = result.get('message_id')
+            result = save_message(room_id, sender_id, ciphertext, iv)
+            message_id = result.get('message_id')
 
-        sender = get_user_by_id(sender_id)
-        sender_name = sender['username'] if sender else 'Unknown'
+            sender = get_user_by_id(sender_id)
+            sender_name = sender['username'] if sender else 'Unknown'
 
-        emit('receive_message', {
-            'sender_id': sender_id,
-            'sender_name': sender_name,
-            'ciphertext': ciphertext,
-            'iv': iv,
-            'timestamp': result.get('timestamp', ''),
-            'message_id': message_id
-        }, room=room_id)
+            emit('receive_message', {
+                'sender_id': sender_id,
+                'sender_name': sender_name,
+                'ciphertext': ciphertext,
+                'iv': iv,
+                'timestamp': result.get('timestamp', ''),
+                'message_id': message_id
+            }, room=room_id)
+        except Exception as e:
+            print(f'Error in send_message: {e}')
+            emit('error', {'message': str(e)})
 
     @socketio.on('load_history')
     def handle_load_history(data):
-        room_id = data.get('room_id')
-        user_id = data.get('user_id')
+        try:
+            room_id = data.get('room_id')
+            user_id = data.get('user_id')
 
-        if not is_member(room_id, user_id):
-            emit('error', {'message': 'Not a member of this room'})
-            return
+            if not is_member(room_id, user_id):
+                emit('error', {'message': 'Not a member of this room'})
+                return
 
-        messages = get_room_messages(room_id)
-        formatted = []
-        for m in messages:
-            formatted.append({
-                'sender_id': m['sender_id'],
-                'sender_name': m['sender_name'],
-                'ciphertext': m['ciphertext'],
-                'iv': m['iv'],
-                'timestamp': m['timestamp'],
-                'message_id': m['id']
-            })
-        emit('history_loaded', {'messages': formatted})
+            messages = get_room_messages(room_id)
+            formatted = []
+            for m in messages:
+                formatted.append({
+                    'sender_id': m['sender_id'],
+                    'sender_name': m['sender_name'],
+                    'ciphertext': m['ciphertext'],
+                    'iv': m['iv'],
+                    'timestamp': m['timestamp'],
+                    'message_id': m['id']
+                })
+            emit('history_loaded', {'messages': formatted})
+        except Exception as e:
+            print(f'Error in load_history: {e}')
+            emit('error', {'message': str(e)})
