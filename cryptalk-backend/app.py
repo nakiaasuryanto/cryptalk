@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -12,6 +13,7 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-prod')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 
 # CORS - allow multiple origins
 ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('ALLOWED_ORIGINS', 'http://localhost:4321').split(',')]
