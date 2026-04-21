@@ -1,3 +1,5 @@
+from . import get_db
+
 def save_message(room_id, sender_id, ciphertext, iv):
     conn = get_db()
     cursor = conn.cursor()

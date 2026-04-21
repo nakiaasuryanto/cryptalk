@@ -4,9 +4,6 @@ import InviteHandler from '../../components/invite/InviteHandler.jsx';
 
 const { token } = Astro.params;
 ---
-<MainLayout title="Invite - AES Messenger">
-  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
-    <h1 style="font-family: var(--font-mono, monospace); color: #39d353; margin-bottom: 2rem;">Invite</h1>
-    <InviteHandler token={token} client:load />
-  </main>
+<MainLayout title="Invite - Cryptalk">
+  <InviteHandler token={token} client:load />
 </MainLayout>
