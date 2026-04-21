@@ -69,7 +69,7 @@ export default function CreateRoomModal({ onClose, onCreated }) {
           <div style={styles.field}>
             <label style={styles.label}>
               Key AES-128 (16 karakter)
-              <span style={styles.counter}>{key.length}/16</span>
+              <span style={{color: key.length === 16 ? '#546B41' : '#6b6b6b'}}>{key.length}/16</span>
             </label>
             <input
               type="text"
@@ -77,7 +77,7 @@ export default function CreateRoomModal({ onClose, onCreated }) {
               onChange={e => setKey(e.target.value)}
               style={styles.input}
               maxLength={16}
-              placeholder="kriptografi123"
+              placeholder="rahasia12345678"
               required
             />
           </div>
@@ -103,24 +103,25 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0,0,0,0.7)',
+    background: 'rgba(0,0,0,0.4)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000
   },
   modal: {
-    background: '#111',
-    border: '1px solid #333',
-    borderRadius: '8px',
+    background: '#DCCCAC',
+    borderRadius: '20px',
     padding: '2rem',
     width: '400px',
-    maxWidth: '90vw'
+    maxWidth: '90vw',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
   },
   title: {
-    color: '#00ff88',
+    color: '#546B41',
     marginBottom: '1.5rem',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '700'
   },
   form: {
     display: 'flex',
@@ -133,28 +134,27 @@ const styles = {
     gap: '0.25rem'
   },
   label: {
-    color: '#888',
+    color: '#6b6b6b',
     fontSize: '0.875rem',
     display: 'flex',
-    justifyContent: 'space-between'
-  },
-  counter: {
-    color: key => key.length === 16 ? '#00ff88' : '#888'
+    justifyContent: 'space-between',
+    fontWeight: '600'
   },
   input: {
-    padding: '0.75rem',
-    background: '#1a1a1a',
-    border: '1px solid #333',
-    borderRadius: '4px',
-    color: '#e0e0e0',
+    padding: '0.875rem',
+    background: '#ffffff',
+    border: '2px solid #c4b494',
+    borderRadius: '10px',
+    color: '#3d3d3d',
     fontSize: '1rem'
   },
   error: {
-    color: '#ff4444',
+    color: '#c45a5a',
     fontSize: '0.875rem',
-    padding: '0.5rem',
-    background: '#2a1a1a',
-    borderRadius: '4px'
+    padding: '0.75rem',
+    background: '#f8e8e8',
+    borderRadius: '10px',
+    textAlign: 'center'
   },
   actions: {
     display: 'flex',
@@ -163,21 +163,22 @@ const styles = {
   },
   cancelBtn: {
     flex: 1,
-    padding: '0.75rem',
-    background: '#333',
-    color: '#e0e0e0',
+    padding: '0.875rem',
+    background: '#c4b494',
+    color: '#3d3d3d',
     border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: '600'
   },
   submitBtn: {
     flex: 1,
-    padding: '0.75rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    padding: '0.875rem',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
-    fontWeight: 'bold',
+    borderRadius: '10px',
+    fontWeight: '700',
     cursor: 'pointer'
   }
 };

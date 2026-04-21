@@ -25,8 +25,8 @@ export default function InviteHandler({ token }) {
       }
 
       // Cek apakah user sudah login
-      const token = localStorage.getItem('aes_token');
-      if (!token) {
+      const authToken = localStorage.getItem('aes_token');
+      if (!authToken) {
         window.location.href = `/login?redirect=/invite/${token}#${hash || ''}`;
         return;
       }
@@ -79,7 +79,7 @@ export default function InviteHandler({ token }) {
     return (
       <div style={styles.container}>
         <div style={styles.errorBox}>
-          <span style={styles.errorIcon}>⚠️</span>
+          <span style={styles.errorIcon}>:(</span>
           <p style={styles.errorText}>{error || 'Link tidak valid atau sudah digunakan'}</p>
           <a href="/dashboard" style={styles.link}>Kembali ke Dashboard</a>
         </div>
@@ -94,7 +94,7 @@ export default function InviteHandler({ token }) {
         <div style={styles.info}>
           <p style={styles.roomName}>Room: <strong>{roomInfo?.room_name}</strong></p>
           <p style={styles.roomMeta}>
-            Anda diundang untuk bergabung ke room enkripsi ini.
+            Kamu diundang untuk bergabung ke room ini!
           </p>
         </div>
         <button onClick={handleJoin} style={styles.joinBtn}>
@@ -112,16 +112,16 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: '#0a0a0a',
+    background: '#FFF8EC',
     padding: '1rem'
   },
   loading: {
-    color: '#888'
+    color: '#6b6b6b'
   },
   errorBox: {
-    background: '#111',
-    border: '1px solid #ff4444',
-    borderRadius: '8px',
+    background: '#DCCCAC',
+    border: '2px solid #c45a5a',
+    borderRadius: '20px',
     padding: '2rem',
     textAlign: 'center',
     maxWidth: '400px'
@@ -132,50 +132,52 @@ const styles = {
     marginBottom: '1rem'
   },
   errorText: {
-    color: '#ff4444',
+    color: '#c45a5a',
     marginBottom: '1rem'
   },
   link: {
-    color: '#00ff88'
+    color: '#546B41',
+    fontWeight: '600'
   },
   card: {
-    background: '#111',
-    border: '1px solid #222',
-    borderRadius: '8px',
+    background: '#DCCCAC',
+    borderRadius: '20px',
     padding: '2rem',
     width: '400px',
     maxWidth: '90vw',
-    textAlign: 'center'
+    textAlign: 'center',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
   },
   title: {
-    color: '#00ff88',
-    marginBottom: '1.5rem'
+    color: '#546B41',
+    marginBottom: '1.5rem',
+    fontWeight: '700'
   },
   info: {
     marginBottom: '1.5rem'
   },
   roomName: {
-    color: '#e0e0e0',
+    color: '#3d3d3d',
     fontSize: '1.1rem'
   },
   roomMeta: {
-    color: '#888',
+    color: '#6b6b6b',
     marginTop: '0.5rem'
   },
   joinBtn: {
     width: '100%',
-    padding: '0.75rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    padding: '0.875rem',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '12px',
     fontSize: '1rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
     marginBottom: '0.75rem'
   },
   cancelLink: {
-    color: '#888',
+    color: '#6b6b6b',
     fontSize: '0.875rem'
   }
 };

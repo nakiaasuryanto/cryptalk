@@ -105,14 +105,16 @@ const styles = {
     maxWidth: '400px',
     margin: '0 auto',
     padding: '2rem',
-    background: '#111',
-    borderRadius: '8px',
-    color: '#e0e0e0'
+    background: '#DCCCAC',
+    borderRadius: '20px',
+    color: '#3d3d3d',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
   },
   title: {
-    color: '#00ff88',
+    color: '#546B41',
     textAlign: 'center',
-    marginBottom: '1.5rem'
+    marginBottom: '1.5rem',
+    fontWeight: '700'
   },
   form: {
     display: 'flex',
@@ -125,41 +127,44 @@ const styles = {
     gap: '0.25rem'
   },
   label: {
-    color: '#888',
-    fontSize: '0.875rem'
+    color: '#6b6b6b',
+    fontSize: '0.875rem',
+    fontWeight: '600'
   },
   input: {
-    padding: '0.75rem',
-    background: '#1a1a1a',
-    border: '1px solid #333',
-    borderRadius: '4px',
-    color: '#e0e0e0',
+    padding: '0.875rem',
+    background: '#ffffff',
+    border: '2px solid #c4b494',
+    borderRadius: '10px',
+    color: '#3d3d3d',
     fontSize: '1rem'
   },
   error: {
-    color: '#ff4444',
+    color: '#c45a5a',
     fontSize: '0.875rem',
-    padding: '0.5rem',
-    background: '#2a1a1a',
-    borderRadius: '4px'
+    padding: '0.75rem',
+    background: '#f8e8e8',
+    borderRadius: '10px',
+    textAlign: 'center'
   },
   button: {
-    padding: '0.75rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    padding: '0.875rem',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '10px',
     fontSize: '1rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
     marginTop: '0.5rem'
   },
   link: {
     textAlign: 'center',
     marginTop: '1rem',
-    color: '#888'
+    color: '#6b6b6b'
   },
   a: {
-    color: '#00ff88'
+    color: '#546B41',
+    fontWeight: '600'
   }
 };

@@ -15,7 +15,7 @@ export default function ChatWindow({ roomId }) {
   useEffect(() => {
     const storedKey = sessionStorage.getItem(`room_key_${roomId}`);
     if (!storedKey) {
-      setError('Key tidak ditemukan. Pastikan Anda bergabung melalui link invite yang benar.');
+      setError('Key tidak ditemukan. Pastikan kamu bergabung melalui link invite yang benar.');
       return;
     }
     setKey(storedKey);
@@ -85,7 +85,7 @@ export default function ChatWindow({ roomId }) {
     return (
       <div style={styles.errorContainer}>
         <div style={styles.errorBox}>
-          <span style={styles.errorIcon}>⚠️</span>
+          <span style={styles.errorIcon}>:(</span>
           <p style={styles.errorText}>{error}</p>
           <a href="/dashboard" style={styles.errorLink}>Kembali ke Dashboard</a>
         </div>
@@ -99,18 +99,18 @@ export default function ChatWindow({ roomId }) {
         <a href="/dashboard" style={styles.backLink}>← Kembali</a>
         <span style={styles.status}>
           {connected ? (
-            <span style={styles.connected}>🟢 Terhubung</span>
+            <span style={styles.connected}>Terhubung</span>
           ) : (
-            <span style={styles.disconnected}>🔴 Memuat...</span>
+            <span style={styles.disconnected}>Memuat...</span>
           )}
         </span>
-        <span style={styles.secure}>🔒 AES-128</span>
+        <span style={styles.secure}>AES-128</span>
       </div>
 
       <div style={styles.messages}>
         {messages.length === 0 && (
           <div style={styles.empty}>
-            {connected ? 'Belum ada pesan. Mulai percakapan!' : 'Memuat riwayat...'}
+            {connected ? 'Belum ada pesan. Mulai ngobrol!' : 'Memuat riwayat...'}
           </div>
         )}
         {messages.map(msg => (
@@ -129,33 +129,40 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
-    background: '#0a0a0a'
+    background: '#FFF8EC'
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '0.75rem 1rem',
-    background: '#111',
-    borderBottom: '1px solid #222'
+    padding: '0.875rem 1.25rem',
+    background: '#DCCCAC',
+    borderBottom: '1px solid #c4b494'
   },
   backLink: {
-    color: '#00ff88',
+    color: '#546B41',
     textDecoration: 'none',
-    fontSize: '0.9rem'
+    fontSize: '0.9rem',
+    fontWeight: '600'
   },
   status: {
     fontSize: '0.8rem'
   },
   connected: {
-    color: '#00ff88'
+    color: '#546B41',
+    fontWeight: '600'
   },
   disconnected: {
-    color: '#ff4444'
+    color: '#c45a5a',
+    fontWeight: '600'
   },
   secure: {
-    color: '#888',
-    fontSize: '0.8rem'
+    color: '#6b6b6b',
+    fontSize: '0.8rem',
+    background: '#99AD7A',
+    padding: '0.25rem 0.5rem',
+    borderRadius: '6px',
+    color: '#fff'
   },
   messages: {
     flex: 1,
@@ -163,7 +170,7 @@ const styles = {
     padding: '1rem'
   },
   empty: {
-    color: '#666',
+    color: '#6b6b6b',
     textAlign: 'center',
     marginTop: '2rem'
   },
@@ -172,12 +179,12 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: '#0a0a0a'
+    background: '#FFF8EC'
   },
   errorBox: {
-    background: '#111',
-    border: '1px solid #ff4444',
-    borderRadius: '8px',
+    background: '#DCCCAC',
+    border: '2px solid #c45a5a',
+    borderRadius: '20px',
     padding: '2rem',
     textAlign: 'center',
     maxWidth: '400px'
@@ -188,10 +195,11 @@ const styles = {
     marginBottom: '1rem'
   },
   errorText: {
-    color: '#ff4444',
+    color: '#c45a5a',
     marginBottom: '1rem'
   },
   errorLink: {
-    color: '#00ff88'
+    color: '#546B41',
+    fontWeight: '600'
   }
 };

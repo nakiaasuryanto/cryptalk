@@ -9,14 +9,14 @@ export default function MessageBubble({ message }) {
 
   return (
     <div style={{ ...styles.wrapper, ...(isOwn ? styles.own : styles.other) }}>
-      <div style={styles.bubble}>
+      <div style={{ ...styles.bubble, ...(isOwn ? styles.bubbleOwn : styles.bubbleOther) }}>
         <div style={styles.meta}>
           <span style={styles.sender}>{message.sender_name}</span>
           <span style={styles.time}>{formatTime(message.timestamp)}</span>
         </div>
 
         {hasDecryptError ? (
-          <div style={styles.errorMsg}>⚠️ Pesan tidak dapat didekripsi</div>
+          <div style={styles.errorMsg}>Pesan tidak dapat didekripsi</div>
         ) : (
           <div style={styles.text}>{message.plaintext}</div>
         )}
@@ -26,7 +26,7 @@ export default function MessageBubble({ message }) {
           style={styles.inspectorToggle}
           title="Lihat detail enkripsi"
         >
-          🔍
+          ?
         </button>
 
         {inspectorVisible && (
@@ -61,10 +61,17 @@ const styles = {
   },
   bubble: {
     maxWidth: '70%',
-    background: '#1a1a1a',
-    borderRadius: '12px',
+    borderRadius: '16px',
     padding: '0.75rem 1rem',
     position: 'relative'
+  },
+  bubbleOwn: {
+    background: '#546B41',
+    color: '#ffffff'
+  },
+  bubbleOther: {
+    background: '#DCCCAC',
+    color: '#3d3d3d'
   },
   meta: {
     display: 'flex',
@@ -73,31 +80,33 @@ const styles = {
     marginBottom: '0.25rem'
   },
   sender: {
-    color: '#00ff88',
     fontSize: '0.8rem',
-    fontWeight: 'bold'
+    fontWeight: '700',
+    opacity: 0.8
   },
   time: {
-    color: '#666',
-    fontSize: '0.75rem'
+    fontSize: '0.75rem',
+    opacity: 0.6
   },
   text: {
-    color: '#e0e0e0',
     lineHeight: '1.4'
   },
   errorMsg: {
-    color: '#ffaa00',
+    color: '#c45a5a',
     fontSize: '0.875rem'
   },
   inspectorToggle: {
     position: 'absolute',
     top: '0.5rem',
-    right: '-2rem',
-    background: 'none',
+    right: '-1.75rem',
+    background: '#99AD7A',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '0.9rem',
-    opacity: 0.4,
-    padding: '0.25rem'
+    fontSize: '0.75rem',
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    color: '#fff',
+    fontWeight: '700'
   }
 };

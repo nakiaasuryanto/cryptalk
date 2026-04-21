@@ -115,7 +115,7 @@ export default function RoomList() {
 
 const styles = {
   container: {
-    padding: '1rem',
+    padding: '1.5rem',
     maxWidth: '800px',
     margin: '0 auto'
   },
@@ -126,34 +126,37 @@ const styles = {
     marginBottom: '1.5rem'
   },
   title: {
-    color: '#00ff88',
-    margin: 0
+    color: '#546B41',
+    margin: 0,
+    fontWeight: '700'
   },
   createBtn: {
-    padding: '0.5rem 1rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    padding: '0.625rem 1.25rem',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '10px',
     cursor: 'pointer',
-    fontWeight: 'bold'
+    fontWeight: '700'
   },
   error: {
-    color: '#ff4444',
+    color: '#c45a5a',
     padding: '0.75rem',
-    background: '#2a1a1a',
-    borderRadius: '4px',
+    background: '#f8e8e8',
+    borderRadius: '10px',
     marginBottom: '1rem'
   },
   loading: {
-    color: '#888',
+    color: '#6b6b6b',
     textAlign: 'center',
     padding: '2rem'
   },
   empty: {
-    color: '#888',
+    color: '#6b6b6b',
     textAlign: 'center',
-    padding: '2rem'
+    padding: '2rem',
+    background: '#DCCCAC',
+    borderRadius: '16px'
   },
   list: {
     display: 'flex',
@@ -161,10 +164,10 @@ const styles = {
     gap: '0.75rem'
   },
   roomCard: {
-    background: '#111',
-    border: '1px solid #222',
-    borderRadius: '8px',
-    padding: '1rem'
+    background: '#DCCCAC',
+    borderRadius: '16px',
+    padding: '1.25rem',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
   },
   roomInfo: {
     display: 'flex',
@@ -173,12 +176,12 @@ const styles = {
     marginBottom: '0.75rem'
   },
   roomName: {
-    color: '#e0e0e0',
+    color: '#3d3d3d',
     fontSize: '1.1rem',
-    fontWeight: 'bold'
+    fontWeight: '700'
   },
   roomMeta: {
-    color: '#888',
+    color: '#6b6b6b',
     fontSize: '0.8rem'
   },
   roomActions: {
@@ -187,35 +190,36 @@ const styles = {
   },
   enterBtn: {
     padding: '0.5rem 1rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontWeight: 'bold'
+    fontWeight: '600'
   },
   inviteBtn: {
     padding: '0.5rem 1rem',
-    background: '#222',
-    color: '#e0e0e0',
-    border: '1px solid #444',
-    borderRadius: '4px',
-    cursor: 'pointer'
+    background: '#99AD7A',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: '600'
   },
   inviteBox: {
     marginTop: '0.75rem',
     padding: '0.75rem',
-    background: '#0a0a0a',
-    borderRadius: '4px'
+    background: '#FFF8EC',
+    borderRadius: '10px'
   },
   inviteLabel: {
-    color: '#888',
+    color: '#6b6b6b',
     fontSize: '0.8rem',
     display: 'block',
     marginBottom: '0.25rem'
   },
   inviteLink: {
-    color: '#00ff88',
+    color: '#546B41',
     fontSize: '0.85rem',
     wordBreak: 'break-all'
   }

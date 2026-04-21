@@ -25,7 +25,7 @@ export default function MessageInput({ onSend }) {
 
   return (
     <div style={styles.container}>
-      <span style={styles.indicator} title="AES-128 Active">🔒 AES-128</span>
+      <span style={styles.indicator} title="AES-128 Active">AES-128</span>
       <input
         type="text"
         value={text}
@@ -51,31 +51,35 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '0.75rem',
-    padding: '0.75rem 1rem',
-    background: '#111',
-    borderTop: '1px solid #222'
+    padding: '0.875rem 1.25rem',
+    background: '#DCCCAC',
+    borderTop: '1px solid #c4b494'
   },
   indicator: {
-    color: '#00ff88',
-    fontSize: '0.75rem',
-    whiteSpace: 'nowrap'
+    color: '#fff',
+    fontSize: '0.7rem',
+    whiteSpace: 'nowrap',
+    background: '#99AD7A',
+    padding: '0.25rem 0.5rem',
+    borderRadius: '6px',
+    fontWeight: '600'
   },
   input: {
     flex: 1,
-    padding: '0.6rem 0.75rem',
-    background: '#1a1a1a',
-    border: '1px solid #333',
-    borderRadius: '4px',
-    color: '#e0e0e0',
+    padding: '0.75rem 1rem',
+    background: '#ffffff',
+    border: '2px solid #c4b494',
+    borderRadius: '12px',
+    color: '#3d3d3d',
     fontSize: '0.95rem'
   },
   button: {
-    padding: '0.6rem 1.25rem',
-    background: '#00ff88',
-    color: '#0a0a0a',
+    padding: '0.75rem 1.5rem',
+    background: '#546B41',
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
-    fontWeight: 'bold',
+    borderRadius: '12px',
+    fontWeight: '700',
     cursor: 'pointer',
     fontSize: '0.9rem'
   },

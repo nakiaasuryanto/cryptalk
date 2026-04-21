@@ -1,17 +1,22 @@
-/* Global CSS - AES Messenger Dark Theme */
+/* Global CSS - Cryptalk Pastel Theme */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
 :root {
-  --color-bg: #0d1117;
-  --color-surface: #161b22;
-  --color-border: #30363d;
-  --color-text: #c9d1d9;
-  --color-text-muted: #8b949e;
-  --color-primary: #39d353;
-  --color-primary-dim: #238636;
-  --color-accent: #58a6ff;
-  --color-error: #f85149;
-  --color-warning: #d29922;
-  --font-mono: 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --color-bg: #FFF8EC;
+  --color-surface: #DCCCAC;
+  --color-border: #c4b494;
+  --color-text: #3d3d3d;
+  --color-text-muted: #6b6b6b;
+  --color-primary: #99AD7A;
+  --color-primary-dim: #546B41;
+  --color-accent: #546B41;
+  --color-error: #d98282;
+  --color-warning: #e0b05a;
+  --color-white: #ffffff;
+  --font-sans: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', 'Consolas', monospace;
+  --radius: 16px;
+  --radius-sm: 10px;
 }
 
 * {
@@ -31,6 +36,7 @@ html, body {
 a {
   color: var(--color-accent);
   text-decoration: none;
+  font-weight: 600;
 }
 
 a:hover {
@@ -40,8 +46,38 @@ a:hover {
 button {
   cursor: pointer;
   font-family: inherit;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
 }
 
 code, pre {
   font-family: var(--font-mono);
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+input, textarea {
+  font-family: inherit;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border);
+  padding: 12px 16px;
+  font-size: 1rem;
+  background: var(--color-white);
+  transition: border-color 0.2s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+::selection {
+  background: var(--color-primary);
+  color: white;
 }

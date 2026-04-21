@@ -15,8 +15,8 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-i
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-prod')
 
 # CORS - allow multiple origins
-ALLOWED_ORIGINS = os.environ.get('ALLOWED_ORIGINS', 'http://localhost:4321').split(',')
-CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
+ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('ALLOWED_ORIGINS', 'http://localhost:4321').split(',')]
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS, "supports_credentials": True, "allow_headers": ["Content-Type", "Authorization"]}})
 
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
