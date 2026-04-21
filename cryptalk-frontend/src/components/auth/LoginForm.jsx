@@ -71,13 +71,14 @@ export default function LoginForm() {
 
 const styles = {
   container: {
-    maxWidth: '400px',
+    width: '100%',
+    maxWidth: '480px',
     margin: '0 auto',
-    padding: '2rem',
+    padding: '2.5rem',
     background: '#DCCCAC',
-    borderRadius: '20px',
+    borderRadius: '24px',
     color: '#3d3d3d',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+    boxShadow: '0 4px 24px rgba(0,0,0,0.1)'
   },
   title: {
     color: '#546B41',
