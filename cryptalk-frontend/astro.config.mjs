@@ -8,11 +8,5 @@ export default defineConfig({
   integrations: [react()],
   adapter: node({
     mode: 'standalone'
-  }),
-  env: {
-    PUBLIC_API_URL: {
-      description: 'Backend API URL',
-      default: 'http://localhost:5001'
-    }
-  }
+  })
 });
