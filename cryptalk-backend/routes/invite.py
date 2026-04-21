@@ -30,10 +30,14 @@ def validate_invite(token):
         return jsonify({'status': 'error', 'message': 'Invalid token'}), 404
 
     if invite['used']:
-        return jsonify({'status': 'success', 'valid': False, 'message': 'Token already used'}), 200
+        return jsonify({'status': 'valid', 'message': 'Token sudah digunakan'}), 200
 
-    expired = datetime.fromisoformat(invite['expired_at']) < datetime.utcnow()
-    if expired:
+    expired_at = invite['expired_at']
+    if isinstance(expired_at, str):
+        expired_at = datetime.fromisoformat(expired_at.replace('Z', '+00:00'))
+
+    if expired_at.replace(tzinfo=None) < datetime.utcnow():
+        return jsonify({'status': 'valid', 'message': 'Token expired'}), 200
         return jsonify({'status': 'success', 'valid': False, 'message': 'Token expired'}), 200
 
     room = get_room_by_id(invite['room_id'])
@@ -54,10 +58,13 @@ def use_invite_endpoint(token):
         return jsonify({'status': 'error', 'message': 'Invalid token'}), 404
 
     if invite['used']:
-        return jsonify({'status': 'error', 'message': 'Token already used'}), 400
+        return jsonify({'status': 'error', 'message': 'Token sudah digunakan'}), 400
 
-    expired = datetime.fromisoformat(invite['expired_at']) < datetime.utcnow()
-    if expired:
+    expired_at = invite['expired_at']
+    if isinstance(expired_at, str):
+        expired_at = datetime.fromisoformat(expired_at.replace('Z', '+00:00'))
+
+    if expired_at.replace(tzinfo=None) < datetime.utcnow():
         return jsonify({'status': 'error', 'message': 'Token expired'}), 400
 
     if is_member(invite['room_id'], user_id):
