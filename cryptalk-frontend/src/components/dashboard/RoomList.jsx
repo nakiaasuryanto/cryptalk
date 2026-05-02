@@ -235,8 +235,7 @@ const styles = {
   },
   main: {
     flex: 1,
-    padding: '2rem',
-    maxWidth: '800px'
+    padding: '2rem'
   },
   header: {
     display: 'flex',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function EncryptionInspector({ plaintext, ciphertext, iv, visible }) {
+export default function EncryptionInspector({ plaintext, ciphertext, iv, visible, isOwn }) {
   const [copied, setCopied] = useState(null);
 
   if (!visible) return null;
@@ -15,39 +15,62 @@ export default function EncryptionInspector({ plaintext, ciphertext, iv, visible
     }
   }
 
+  const plaintextRow = (
+    <div style={styles.row}>
+      <span style={styles.label}>Plaintext  :</span>
+      <span style={styles.value}>"{plaintext || '(gagal dekripsi)'}"</span>
+      <button onClick={() => copyToClipboard(plaintext || '', 'plaintext')} style={styles.copyBtn}>
+        {copied === 'plaintext' ? '✓' : '📋'}
+      </button>
+    </div>
+  );
+
+  const ivRow = (
+    <div style={styles.row}>
+      <span style={styles.label}>IV         :</span>
+      <span style={styles.valueMono}>{iv || '-'}</span>
+      <button onClick={() => copyToClipboard(iv || '', 'iv')} style={styles.copyBtn}>
+        {copied === 'iv' ? '✓' : '📋'}
+      </button>
+    </div>
+  );
+
+  const ciphertextRow = (
+    <div style={styles.row}>
+      <span style={styles.label}>Ciphertext :</span>
+      <span style={styles.valueMono} title={ciphertext}>
+        {ciphertext ? (ciphertext.slice(0, 20) + '...') : '-'}
+      </span>
+      <button onClick={() => copyToClipboard(ciphertext || '', 'ciphertext')} style={styles.copyBtn}>
+        {copied === 'ciphertext' ? '✓' : '📋'}
+      </button>
+    </div>
+  );
+
   return (
     <div style={styles.panel}>
-      <div style={styles.header}>🔍 Encryption Detail</div>
+      <div style={styles.header}>
+        {isOwn ? '🔒 Encryption Detail' : '🔓 Decryption Detail'}
+      </div>
       <div style={styles.divider}>─────────────────────────────</div>
 
-      <div style={styles.row}>
-        <span style={styles.label}>Plaintext  :</span>
-        <span style={styles.value}>"{plaintext || '(gagal dekripsi)'}"</span>
-        <button onClick={() => copyToClipboard(plaintext || '', 'plaintext')} style={styles.copyBtn}>
-          {copied === 'plaintext' ? '✓' : '📋'}
-        </button>
-      </div>
-
-      <div style={styles.row}>
-        <span style={styles.label}>IV         :</span>
-        <span style={styles.valueMono}>{iv || '-'}</span>
-        <button onClick={() => copyToClipboard(iv || '', 'iv')} style={styles.copyBtn}>
-          {copied === 'iv' ? '✓' : '📋'}
-        </button>
-      </div>
-
-      <div style={styles.row}>
-        <span style={styles.label}>Ciphertext :</span>
-        <span style={styles.valueMono} title={ciphertext}>
-          {ciphertext ? (ciphertext.slice(0, 20) + '...') : '-'}
-        </span>
-        <button onClick={() => copyToClipboard(ciphertext || '', 'ciphertext')} style={styles.copyBtn}>
-          {copied === 'ciphertext' ? '✓' : '📋'}
-        </button>
-      </div>
-
-      <div style={styles.divider}>─────────────────────────────</div>
-      <div style={styles.mode}>Mode       : AES-128-CBC</div>
+      {isOwn ? (
+        <>
+          {plaintextRow}
+          <div style={styles.arrow}>↓</div>
+          {ivRow}
+          <div style={styles.arrow}>↓</div>
+          {ciphertextRow}
+        </>
+      ) : (
+        <>
+          {ciphertextRow}
+          <div style={styles.arrow}>↓</div>
+          {ivRow}
+          <div style={styles.arrow}>↓</div>
+          {plaintextRow}
+        </>
+      )}
     </div>
   );
 }
@@ -100,8 +123,10 @@ const styles = {
     fontSize: '0.75rem',
     opacity: 0.6
   },
-  mode: {
-    color: '#888',
-    fontFamily: 'monospace'
+  arrow: {
+    color: '#00ff88',
+    textAlign: 'center',
+    fontSize: '0.9rem',
+    margin: '0.25rem 0'
   }
 };

@@ -35,6 +35,7 @@ export default function MessageBubble({ message }) {
             ciphertext={message.ciphertext}
             iv={message.iv}
             visible={inspectorVisible}
+            isOwn={isOwn}
           />
         )}
       </div>
