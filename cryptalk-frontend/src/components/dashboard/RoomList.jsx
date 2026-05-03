@@ -13,6 +13,15 @@ export default function RoomList() {
   const [error, setError] = useState('');
   const [user, setUser] = useState({});
   const [unreadCounts, setUnreadCounts] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
@@ -86,28 +95,51 @@ export default function RoomList() {
     window.location.href = '/login';
   }
 
+  const sidebarContent = (
+    <>
+      <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px', marginBottom: '2rem'}} />
+
+      <div style={styles.userCard}>
+        <div style={styles.avatar}>{user.username?.charAt(0).toUpperCase() || '?'}</div>
+        <div style={styles.userInfo}>
+          <span style={styles.userName}>{user.username}</span>
+          <span style={styles.userEmail}>{user.email}</span>
+        </div>
+      </div>
+
+      <button onClick={handleLogout} style={styles.logoutBtn}>
+        Logout
+      </button>
+    </>
+  );
+
   return (
     <div style={styles.wrapper}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <img src="/LOGO_CT.png" alt="Cryptalk" style={{height: '40px', marginBottom: '2rem'}} />
+      {/* Mobile Overlay */}
+      {isMobile && sidebarOpen && (
+        <div style={styles.overlay} onClick={() => setSidebarOpen(false)} />
+      )}
 
-        <div style={styles.userCard}>
-          <div style={styles.avatar}>{user.username?.charAt(0).toUpperCase() || '?'}</div>
-          <div style={styles.userInfo}>
-            <span style={styles.userName}>{user.username}</span>
-            <span style={styles.userEmail}>{user.email}</span>
-          </div>
-        </div>
-
-        <button onClick={handleLogout} style={styles.logoutBtn}>
-          Logout
-        </button>
+      {/* Sidebar - Desktop or Mobile Drawer */}
+      <div style={{
+        ...styles.sidebar,
+        ...(isMobile ? styles.sidebarMobile : {}),
+        ...(isMobile && sidebarOpen ? styles.sidebarMobileOpen : {})
+      }}>
+        {isMobile && (
+          <button onClick={() => setSidebarOpen(false)} style={styles.closeBtn}>×</button>
+        )}
+        {sidebarContent}
       </div>
 
       {/* Main Content */}
       <div style={styles.main}>
         <div style={styles.header}>
+          {isMobile && (
+            <button onClick={() => setSidebarOpen(true)} style={styles.menuBtn}>
+              ☰
+            </button>
+          )}
           <h2 style={styles.title}>Room Kamu</h2>
           <button onClick={() => setShowModal(true)} style={styles.createBtn}>
             + Buat Room
@@ -178,7 +210,8 @@ export default function RoomList() {
 const styles = {
   wrapper: {
     display: 'flex',
-    minHeight: '100vh'
+    minHeight: '100vh',
+    position: 'relative'
   },
   sidebar: {
     width: '280px',
@@ -187,6 +220,47 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
+  },
+  sidebarMobile: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    zIndex: 100,
+    transform: 'translateX(-100%)',
+    transition: 'transform 0.3s ease'
+  },
+  sidebarMobileOpen: {
+    transform: 'translateX(0)'
+  },
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 99
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: '1rem',
+    right: '1rem',
+    background: 'none',
+    border: 'none',
+    fontSize: '1.5rem',
+    color: '#3d3d3d',
+    cursor: 'pointer'
+  },
+  menuBtn: {
+    background: '#546B41',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '0.5rem 0.75rem',
+    fontSize: '1.25rem',
+    cursor: 'pointer',
+    marginRight: '0.75rem'
   },
   userCard: {
     display: 'flex',
@@ -235,18 +309,20 @@ const styles = {
   },
   main: {
     flex: 1,
-    padding: '2rem'
+    padding: '2rem',
+    minWidth: 0
   },
   header: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '1.5rem'
+    marginBottom: '1.5rem',
+    gap: '0.5rem'
   },
   title: {
     color: '#546B41',
     margin: 0,
-    fontWeight: '700'
+    fontWeight: '700',
+    flex: 1
   },
   createBtn: {
     padding: '0.625rem 1.25rem',

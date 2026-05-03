@@ -17,7 +17,15 @@ export default function ChatWindow({ roomId }) {
   const [keyInput, setKeyInput] = useState('');
   const [keyError, setKeyError] = useState('');
   const [keyLoading, setKeyLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('aes_user') || '{}');
@@ -232,11 +240,22 @@ export default function ChatWindow({ roomId }) {
         <MessageInput onSend={handleSend} />
       </div>
 
+      {/* Mobile Overlay */}
+      {isMobile && showSidebar && (
+        <div style={styles.overlay} onClick={() => setShowSidebar(false)} />
+      )}
+
       {/* Sidebar */}
       {showSidebar && (
-        <div style={styles.sidebar}>
+        <div style={{
+          ...styles.sidebar,
+          ...(isMobile ? styles.sidebarMobile : {})
+        }}>
           <div style={styles.sidebarHeader}>
             <h3 style={styles.sidebarTitle}>Detail Room</h3>
+            {isMobile && (
+              <button onClick={() => setShowSidebar(false)} style={styles.closeSidebarBtn}>×</button>
+            )}
           </div>
 
           <div style={styles.sidebarContent}>
@@ -343,9 +362,37 @@ const styles = {
     flexDirection: 'column',
     overflow: 'hidden'
   },
+  sidebarMobile: {
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+    borderLeft: '1px solid #c4b494'
+  },
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 99
+  },
   sidebarHeader: {
     padding: '1rem',
-    borderBottom: '1px solid #c4b494'
+    borderBottom: '1px solid #c4b494',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  closeSidebarBtn: {
+    background: 'none',
+    border: 'none',
+    fontSize: '1.5rem',
+    color: '#3d3d3d',
+    cursor: 'pointer',
+    padding: '0 0.25rem'
   },
   sidebarTitle: {
     margin: 0,

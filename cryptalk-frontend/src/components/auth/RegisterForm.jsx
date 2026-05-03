@@ -105,7 +105,7 @@ const styles = {
     width: '100%',
     maxWidth: '480px',
     margin: '0 auto',
-    padding: '2.5rem',
+    padding: 'clamp(1.5rem, 5vw, 2.5rem)',
     background: '#DCCCAC',
     borderRadius: '24px',
     color: '#3d3d3d',
