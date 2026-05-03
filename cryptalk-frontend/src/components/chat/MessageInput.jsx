@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function MessageInput({ onSend }) {
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   async function handleSend() {
     if (!text.trim() || sending) return;
@@ -25,7 +33,7 @@ export default function MessageInput({ onSend }) {
 
   return (
     <div style={styles.container}>
-      <span style={styles.indicator} title="AES-128 Active">AES-128</span>
+      {!isMobile && <span style={styles.indicator} title="AES-128 Active">AES-128</span>}
       <input
         type="text"
         value={text}
@@ -37,7 +45,11 @@ export default function MessageInput({ onSend }) {
       />
       <button
         onClick={handleSend}
-        style={{ ...styles.button, ...(sending ? styles.buttonDisabled : {}) }}
+        style={{
+          ...styles.button,
+          ...(sending ? styles.buttonDisabled : {}),
+          ...(isMobile ? styles.buttonMobile : {})
+        }}
         disabled={sending || !text.trim()}
       >
         Kirim
@@ -86,5 +98,8 @@ const styles = {
   buttonDisabled: {
     opacity: 0.5,
     cursor: 'not-allowed'
+  },
+  buttonMobile: {
+    padding: '0.75rem 1rem'
   }
 };
